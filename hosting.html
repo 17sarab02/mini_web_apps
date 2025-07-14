@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="https://media.flaticon.com/dist/min/img/favicon.ico">
+    <title>CineHost</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap');
+
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+            color: white;
+            font-family: 'Saira', 'sans-serif';
+            outline: none;
+            border: none;
+            font-size: 15px;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        button {
+            cursor: pointer;
+            background: none;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+        }
+
+        .selected {
+            border: 4px white solid;
+        }
+
+        .absolute {
+            position: absolute;
+        }
+
+        .fullSize {
+            width: 100%;
+            height: 100%;
+        }
+
+        .App {
+            display: flex;
+            position: relative;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .Background {
+            z-index: -1;
+            background: black;
+        }
+
+        .ActualOverlay {
+            animation: fadeIn 0.5s 0s 1 normal ease-in-out both;
+        }
+
+        .ThemeIcon {
+            width: 45px;
+            height: 45px;
+            border: 2px rgba(255, 255, 255, 0.5) solid;
+            border-radius: 10px;
+            transition: 0.1s all ease-in-out;
+        }
+
+        .ThemeIcon:hover {
+            scale: 1.2;
+        }
+
+        .ThemeOptionsToggle {
+            width: 25px;
+            height: 25px;
+            z-index: 2;
+            left: 10px;
+            top: 13px;
+        }
+
+        .ThemeOptions {
+            left: -150px;
+            top: 10px;
+            transition: 0.3s all ease-out;
+        }
+
+        .ThemeOptionsGrid {
+            display: grid;
+            margin-top: 10px;
+            grid-template-columns: repeat(3, 45px);
+            grid-template-rows: repeat(7, 45px);
+            grid-gap: 3px;
+        }
+
+        .AppElement {
+            margin: 5px;
+        }
+
+        .prevent-select {
+            -webkit-user-select: none;
+            /* Safari */
+            -ms-user-select: none;
+            /* IE 10 and IE 11 */
+            user-select: none;
+            /* Standard syntax */
+        }
+
+        .LoadButton {
+            background: rgba(0, 0, 0, 0.5);
+            transition: 0.4s ease all;
+            clip-path: path("M151.11,0c1.65,0,2.05,.95,.88,2.12l-37.36,37.36c-1.17,1.17-3.47,2.12-5.12,2.12H1.55c-1.65,0-2.05-.95-.88-2.12L38.03,2.12c1.17-1.17,3.47-2.12,5.12-2.12h107.96Z");
+            animation: fadeIn 0.5s 0s 1 normal ease-in-out both;
+        }
+
+        .LoadButton:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .LoadButton:active {
+            background: black;
+        }
+
+        .FileNameFull {
+            transition: 0.5s all ease;
+        }
+
+        .LoadedFile {
+            height: 0px;
+            margin: 0px;
+        }
+
+        .FileUnloadButton {
+            opacity: 0.5;
+            transition: 0.2s all ease-in-out
+        }
+
+        .FileUnloadButton:hover {
+            opacity: 1;
+        }
+
+        .PathInputElement {
+            background: rgba(0, 0, 0, 0.5);
+            transition: 0.4s ease all;
+            clip-path: path("M38.03,2.12c1.17-1.17,3.47-2.12,5.12-2.12h252.4c1.65,0,2.05,.95,.88,2.12l-37.36,37.36c-1.17,1.17-3.47,2.12-5.12,2.12H1.55c-1.65,0-2.05-.95-.88-2.12L38.03,2.12Z");
+            padding: 0px 45px;
+        }
+
+        .PathInputElement:focus {
+            background: black;
+        }
+
+        .VideoElement {
+            margin: 20px;
+            box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 20px 0px;
+            border-radius: 5px;
+        }
+
+        .VideoElement::cue {
+            font-family: 'Saira', sans-serif;
+            font-weight: 400;
+            font-size: 2.5rem;
+            background: none;
+            text-shadow: rgba(0, 0, 0, 0.5) 3px 3px;
+        }
+
+        .label-elements {
+            text-align: center;
+            white-space: nowrap;
+            width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="App">
+        <div class="Background absolute fullSize"></div>
+        <button class="ThemeOptionsToggle absolute" onclick="themeOptionsToggle()">
+            <svg stroke="white" stroke-width="2" fill="none" stroke-linecap="round" viewBox="0 0 24 24">
+                <line x1="6.5" y1="6.5" x2="17.5" y2="6.5">
+                    <animate class="animateToClose" attributeName="y2" begin="indefinite" fill="freeze" to="17.5"
+                        dur="0.2s" />
+                    <animate class="animateToOpen" attributeName="y2" begin="indefinite" fill="freeze" to="6.5"
+                        dur="0.2s" />
+                </line>
+                <line x1="6.5" y1="12" x2="17.5" y2="12">
+                    <animate class="animateToClose" attributeName="opacity" begin="indefinite" fill="freeze" to="0"
+                        dur="0.2s" />
+                    <animate class="animateToOpen" attributeName="opacity" begin="indefinite" fill="freeze" to="1"
+                        dur="0.2s" />
+                </line>
+                <line x1="6.5" y1="17.5" x2="17.5" y2="17.5">
+                    <animate class="animateToClose" attributeName="y2" begin="indefinite" fill="freeze" to="6.5"
+                        dur="0.2s" />
+                    <animate class="animateToOpen" attributeName="y2" begin="indefinite" fill="freeze" to="17.5"
+                        dur="0.2s" />
+                </line>
+            </svg>
+        </button>
+        <div class="ThemeOptions absolute">
+            <h3 class="prevent-select" style="text-align: center; font-weight: 500;">&nbspThemes</h3>
+            <div class="ThemeOptionsGrid"></div>
+        </div>
+        <div class="AppElement" style="position: relative; width: 300px; height: 41.6px;">
+            <button class="LoadButton absolute" onclick="triggerUpload('Video')"
+                style="width: 152px; height: 100%; left: 0px;">
+                <span class="prevent-select">Video</span>
+            </button>
+            <button class="LoadButton absolute" onClick="triggerUpload('Subtitles')"
+                style="width: 152px; height: 100%; right: 0px;">
+                <span class="prevent-select">Subtitles</span>
+            </button>
+        </div>
+        <div class="AppElement PathInputElement LoadedVideo"
+            style="display: flex; justify-content: space-between; align-items: center; width: 300px; height: 41.6px;">
+            <span>&nbsp</span>
+            <p class="VideoNameFull prevent-select label-elements"><span class="VideoName">No Video Loaded</span><span
+                    class="VideoExtension" style="opacity: 0.5"></span></p>
+            <button onclick="removeAction('Video')" class="VideoUnloadButton"
+                style="height: 0px; width: 0px; opacity: 0;">
+                <svg viewBox="0 0 13.5 41.6" style="height: 100%;">
+                    <path fill="white"
+                        d="M12.75,27.55c-.19,0-.38-.07-.53-.22l-5.47-5.47L1.28,27.33c-.29,.29-.77,.29-1.06,0s-.29-.77,0-1.06l5.47-5.47L.22,15.33c-.29-.29-.29-.77,0-1.06s.77-.29,1.06,0l5.47,5.47,5.47-5.47c.29-.29,.77-.29,1.06,0s.29,.77,0,1.06l-5.47,5.47,5.47,5.47c.29,.29,.29,.77,0,1.06-.15,.15-.34,.22-.53,.22Z" />
+                </svg>
+            </button>
+        </div>
+        <div class="AppElement PathInputElement LoadedSubtitles"
+            style="display: flex; justify-content: space-between; align-items: center; width: 300px; height: 41.6px;">
+            <span>&nbsp</span>
+            <p class="SubtitlesNameFull prevent-select label-elements"><span class="SubtitlesName">No Subtitles
+                    Loaded</span><span class="SubtitlesExtension" style="opacity: 0.5"></span></p>
+            <button onclick="removeAction('Subtitles')" class="SubtitlesUnloadButton"
+                style="height: 0px; width: 0px; opacity: 0; translate: 10px;">
+                <svg viewBox="0 0 13.5 41.6" style="height: 100%;">
+                    <path fill="white"
+                        d="M12.75,27.55c-.19,0-.38-.07-.53-.22l-5.47-5.47L1.28,27.33c-.29,.29-.77,.29-1.06,0s-.29-.77,0-1.06l5.47-5.47L.22,15.33c-.29-.29-.29-.77,0-1.06s.77-.29,1.06,0l5.47,5.47,5.47-5.47c.29-.29,.77-.29,1.06,0s.29,.77,0,1.06l-5.47,5.47,5.47,5.47c.29,.29,.29,.77,0,1.06-.15,.15-.34,.22-.53,.22Z" />
+                </svg>
+            </button>
+        </div>
+        <input class="VideoUpload" type="file" accept="video/*" onchange="handleUpload('Video')" style="display: none;">
+        <input class="SubtitlesUpload" type="file" accept=".srt,.vtt" onchange="handleUpload('Subtitles')" style="display: none;">
+
+        <video class="AppElement VideoElement" controls type="video/mp4" width="480" height="270">
+            <track class="SubtitlesElement" label="English" kind="subtitles" srclang="en" default />
+        </video>
+    </div>
+    <script>
+        var videoUploaded = false
+        var subtitlesUploaded = false
+        document.querySelector('.VideoNameFull').style.opacity = 0
+        setTimeout(() => { document.querySelector('.VideoNameFull').style.opacity = 0.5 }, 0)
+        document.querySelector('.SubtitlesNameFull').style.opacity = 0
+        setTimeout(() => { document.querySelector('.SubtitlesNameFull').style.opacity = 0.5 }, 0)
+
+        function triggerUpload(VideoOrSubtitles) {
+            if (VideoOrSubtitles == 'Video') {
+                if (!videoUploaded)
+                    document.querySelector('.VideoUpload').click()
+            }
+            else if (VideoOrSubtitles == 'Subtitles') {
+                if (!subtitlesUploaded) {
+                    document.querySelector('.SubtitlesUpload').click()
+                }
+            }
+        }
+
+        function removeAction(VideoOrSubtitles) {
+            document.querySelector(`.${VideoOrSubtitles}Upload`).value = ''
+            const targetElement = document.querySelector(`.${VideoOrSubtitles}Element`)
+            targetElement.setAttribute('src', '')
+            const removeButton = document.querySelector(`.${VideoOrSubtitles}UnloadButton`)
+            removeButton.style.height = '0px'; removeButton.style.width = '0px';
+            removeButton.style.opacity = 0; removeButton.setAttribute('disabled', true)
+            document.querySelector(`.${VideoOrSubtitles}NameFull`).style.opacity = 0.5
+            const fileNameElement = document.querySelector(`.${VideoOrSubtitles}Name`)
+            const fileExtensionElement = document.querySelector(`.${VideoOrSubtitles}Extension`)
+            fileNameElement.innerText = 'No File Loaded'
+            fileNameElement.style.opacity = 0.5;
+            fileExtensionElement.innerText = ''
+            if (VideoOrSubtitles == 'Video')
+                videoUploaded = false
+            else if (VideoOrSubtitles == 'Subtitles')
+                subtitlesUploaded = false
+        }
+
+        function fileExtractor(filePath) {
+            let lastValue = filePath.split('\/')
+            lastValue = lastValue[lastValue.length - 1]
+            lastValue = lastValue.split('\\')
+            lastValue = lastValue[lastValue.length - 1]
+
+            lastValue = lastValue.split('.')
+
+            if (lastValue.length == 1)
+                return { fileName: lastValue[0], fileExtension: '' }
+            else
+                return { fileName: lastValue.slice(0, -1).join('.'), fileExtension: lastValue[lastValue.length - 1] }
+        }
+
+        function addToDisplay(VideoOrSubtitles, fileName, fileExtension) {
+            document.querySelector(`.${VideoOrSubtitles}NameFull`).style.opacity = 1
+            const fileNameElement = document.querySelector(`.${VideoOrSubtitles}Name`)
+            const fileExtensionElement = document.querySelector(`.${VideoOrSubtitles}Extension`)
+            fileNameElement.innerText = fileName
+            fileExtensionElement.innerText = `.${fileExtension}`
+
+            const removeButton = document.querySelector(`.${VideoOrSubtitles}UnloadButton`)
+            removeButton.style.height = '35px'; removeButton.style.width = '35px';
+            removeButton.style.opacity = 0.5; removeButton.removeAttribute('disabled')
+        }
+
+        function srtToVttFile(fileObject) {
+            return new Promise((resolve, reject) => {
+                const fileReader = new FileReader()
+                fileReader.onload = () => {
+                    const subDialogues = fileReader.result.split('\r\n\r\n')
+                    let newText = 'WEBVTT'
+                    for(let i=0; i<subDialogues.length; i++){
+                        const match = subDialogues[i].match(/(\d+)\r\n(.*)\r\n([\s\S]+)/)
+                        if(match) newText = `${newText}\r\n\r\n${match[2].replaceAll(',','.')}\r\n${match[3]}`
+                    }
+                    resolve(newText)
+                }
+                fileReader.readAsText(fileObject)
+            })
+        }
+
+        async function handleUpload(VideoOrSubtitles) {
+            const file = document.querySelector(`.${VideoOrSubtitles}Upload`).files[0]
+            const { fileName, fileExtension } = fileExtractor(file.name)
+
+            const targetElement = document.querySelector(`.${VideoOrSubtitles}Element`)
+            addToDisplay(VideoOrSubtitles, fileName, fileExtension)
+
+            if (VideoOrSubtitles == 'Video') {
+                targetElement.src = URL.createObjectURL(file)
+                videoUploaded = true
+            }
+            else if (VideoOrSubtitles == 'Subtitles') {
+                if (fileExtension == 'srt'){
+                    srtToVttFile(file).then(vttText=>{
+                        const newBlob = new Blob([vttText])
+                        targetElement.src = URL.createObjectURL(newBlob)
+                    })
+                }
+                else
+                    targetElement.src = URL.createObjectURL(file)
+                subtitlesUploaded = true
+            }
+        }
+    </script>
+    <script>
+        var themes = [{ color1: "f3077d", color2: "e094f7" }, { color1: "e437ed", color2: "fb6327" }, { color1: "dc046b", color2: "572025" }, { color1: "d96d6a", color2: "fbd1a3" }, { color1: "d690fc", color2: "8e5fe3" }, { color1: "090d73", color2: "4c74db" }, { color1: "f70079", color2: "640eb3" }, { color1: "6e70ff", color2: "efa9ff" }, { color1: "4f3069", color2: "f0a77b" }, { color1: "4ecded", color2: "5b37ff" }, { color1: "3f3369", color2: "32a790" }, { color1: "f295d2", color2: "f24e66" }, { color1: "0961f2", color2: "0241cb" }, { color1: "3f216d", color2: "3b039e" }, { color1: "8486f8", color2: "ebbfd0" }, { color1: "b9de98", color2: "12b9c5" }, { color1: "fe1e7a", color2: "f89530" }, { color1: "3c8deb", color2: "90dde0" }, { color1: "03ff8c", color2: "5cf0f7" }, { color1: "ff9b19", color2: "fff358" }, { color1: "c12bf3", color2: "b4d05f" }]
+
+        var themeBarOpened = false;
+        var themeChanging = false;
+        var overallApp = document.querySelector('.App');
+        var backgroundContainer = document.querySelector('.Background');
+        var themeOptions = document.querySelector('.ThemeOptions')
+        var optionsGrid = document.querySelector('.ThemeOptionsGrid')
+
+        function themeOptionsToggle() {
+            if (themeBarOpened) {
+                themeBarOpened = false;
+                themeOptions.style.opacity = '0'
+                themeOptions.style.left = '-150px'
+                const elementsToOpen = document.querySelectorAll('.animateToOpen')
+                for (let i = 0; i < elementsToOpen.length; i++)
+                    elementsToOpen[i].beginElement()
+            }
+            else {
+                themeBarOpened = true;
+                themeOptions.style.opacity = '1'
+                themeOptions.style.left = '10px'
+                const elementsToClose = document.querySelectorAll('.animateToClose')
+                for (let i = 0; i < elementsToClose.length; i++)
+                    elementsToClose[i].beginElement()
+            }
+        }
+
+        function addThemes() {
+            themes.map((theme, index) => {
+                let newThemeIcon = document.createElement('div'); newThemeIcon.classList.add('ThemeIcon')
+                newThemeIcon.style.background = `linear-gradient(-45deg, #${theme.color1}, #${theme.color2})`
+                newThemeIcon.addEventListener('click', () => {
+                    addBackground(index + 1)
+                })
+                optionsGrid.appendChild(newThemeIcon)
+            })
+        } addThemes()
+
+        function addBackground(index) {
+            localStorage.setItem('theme', index)
+            let selectedElement = document.querySelector('.selected')
+            let elementToSelect = document.querySelectorAll('.ThemeIcon')[index - 1]
+            if (selectedElement) { selectedElement.classList.remove('selected') }
+            if (elementToSelect) { elementToSelect.classList.add('selected') }
+            let newBackground = document.createElement('div'); newBackground.classList.add('ActualOverlay');
+            newBackground.classList.add('fullSize'); newBackground.classList.add('absolute')
+            newBackground.style.background = `linear-gradient(-45deg, #${themes[index - 1].color1}, #${themes[index - 1].color2})`
+            backgroundContainer.appendChild(newBackground)
+            setTimeout(() => {
+                const childNodes = backgroundContainer.childNodes;
+                for (let i = 0; i < childNodes.length - 1; i++) {
+                    backgroundContainer.removeChild(childNodes[i]);
+                }
+            }, 750)
+        }; addBackground(localStorage.getItem('theme') | 1);
+    </script>
+</body>
+
+</html>
