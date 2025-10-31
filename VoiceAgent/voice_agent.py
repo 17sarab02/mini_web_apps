@@ -218,12 +218,14 @@ async def websocket_endpoint(websocket: WebSocket):
                 elif command == 60:
                     open_chrome("https://www.reddit.com")
                 elif command == 61:
-                    open_chrome("https://x.com")
+                    open_chrome("https://www.reddit.com")
                 elif command == 62:
-                    open_chrome("https://www.photopea.com")
+                    open_chrome("https://x.com")
                 elif command == 63:
-                    open_chrome("https://jira.rampgroup.com/secure/RapidBoard.jspa?rapidView=1208&projectKey=DEF&quickFilter=11925")
+                    open_chrome("https://www.photopea.com")
                 elif command == 64:
+                    open_chrome("https://jira.rampgroup.com/secure/RapidBoard.jspa?rapidView=1208&projectKey=DEF&quickFilter=11925")
+                elif command == 65:
                     start_date = SPRINT_START_DATE
                     end_date = SPRINT_END_DATE
                     current_date = datetime.now()
@@ -232,57 +234,57 @@ async def websocket_endpoint(websocket: WebSocket):
                         end_date = end_date + timedelta(days=24)
                     target_path = REPORT_PATH.format(start_date=start_date.strftime(r"%Y-%m-%d"), end_date=current_date.strftime(r"%Y-%m-%d"))
                     open_chrome(target_path)
-                elif command == 65:
-                    open_chrome("https://outlook.office.com/mail")
                 elif command == 66:
-                    open_chrome("https://teams.microsoft.com/v2")
+                    open_chrome("https://outlook.office.com/mail")
                 elif command == 67:
-                    open_chrome("https://onedrive.live.com/?view=1")
+                    open_chrome("https://teams.microsoft.com/v2")
                 elif command == 68:
-                    open_chrome("https://www.dropbox.com/home")
+                    open_chrome("https://onedrive.live.com/?view=1")
                 elif command == 69:
-                    open_chrome("https://drive.google.com/drive/my-drive")
+                    open_chrome("https://www.dropbox.com/home")
                 elif command == 70:
-                    open_chrome("https://www.google.com/maps/")
+                    open_chrome("https://drive.google.com/drive/my-drive")
                 elif command == 71:
-                    open_chrome("https://docs.google.com/presentation")
+                    open_chrome("https://www.google.com/maps/")
                 elif command == 72:
-                    open_chrome("https://docs.google.com/document")
+                    open_chrome("https://docs.google.com/presentation")
                 elif command == 73:
-                    open_chrome("https://docs.google.com/spreadsheets")
+                    open_chrome("https://docs.google.com/document")
                 elif command == 74:
-                    open_chrome("https://mail.google.com/mail")
+                    open_chrome("https://docs.google.com/spreadsheets")
                 elif command == 75:
-                    open_chrome("https://www.youtube.com")
+                    open_chrome("https://mail.google.com/mail")
                 elif command == 76:
-                    open_chrome("https://gemini.google.com/app")
+                    open_chrome("https://www.youtube.com")
                 elif command == 77:
-                    open_chrome("https://chatgpt.com")
+                    open_chrome("https://gemini.google.com/app")
                 elif command == 78:
-                    open_chrome("https://github.com/17sarab02")
+                    open_chrome("https://chatgpt.com")
                 elif command == 79:
-                    open_chrome("https://web.whatsapp.com")
+                    open_chrome("https://github.com/17sarab02")
                 elif command == 80:
-                    open_chrome("https://www.amazon.in")
+                    open_chrome("https://web.whatsapp.com")
                 elif command == 81:
-                    open_chrome("https://www.flipkart.com")
+                    open_chrome("https://www.amazon.in")
                 elif command == 82:
-                    open_chrome("https://www.myntra.com")
+                    open_chrome("https://www.flipkart.com")
                 elif command == 83:
-                    open_chrome("https://www.ajio.com")
+                    open_chrome("https://www.myntra.com")
                 elif command == 84:
-                    open_chrome("https://www.canva.com/en_in")
+                    open_chrome("https://www.ajio.com")
                 elif command == 85:
-                    pyautogui.write(os.getenv("VA_NAME"))
+                    open_chrome("https://www.canva.com/en_in")
                 elif command == 86:
-                    pyautogui.write(os.getenv("VA_FULLNAME"))
+                    pyautogui.write(os.getenv("VA_NAME"))
                 elif command == 87:
-                    pyautogui.write(os.getenv("VA_PASSWORD"))
+                    pyautogui.write(os.getenv("VA_FULLNAME"))
                 elif command == 88:
-                    pyautogui.write(os.getenv("VA_EMAIL"))
+                    pyautogui.write(os.getenv("VA_PASSWORD"))
                 elif command == 89:
-                    pyautogui.write(os.getenv("VA_AADHAR"))
+                    pyautogui.write(os.getenv("VA_EMAIL"))
                 elif command == 90:
+                    pyautogui.write(os.getenv("VA_AADHAR"))
+                elif command == 91:
                     pyautogui.write(os.getenv("VA_PHONE_NUMBER"))
                 
             except ValueError:
