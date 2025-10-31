@@ -216,7 +216,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 elif command == 59:
                     open_chrome("https://www.instagram.com")
                 elif command == 60:
-                    open_chrome("https://www.reddit.com")
+                    open_chrome("https://discord.com/channels/@me")
                 elif command == 61:
                     open_chrome("https://www.reddit.com")
                 elif command == 62:
